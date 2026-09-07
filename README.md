@@ -164,18 +164,6 @@ staged.
 Every checkout in the workflow sets `lfs: true`. That isn't optional now that the profile photo is an LFS-tracked PNG: without it the checkout hands
 Hugo a pointer file, and `.Fill` in the hero partial dies with `image: unknown format` rather than falling back to the monogram.
 
-### The domain
-
-Two of the three pieces for `dillonsmedley.com` are in the repo. The third is DNS, which is a one-time job at the registrar.
-
-- `baseURL` in [config/production/hugo.toml](config/production/hugo.toml).
-- [static/CNAME](static/CNAME), which is how GitHub Pages learns the domain. Hugo copies `static/` verbatim, so the file lands at the site root where
-  Pages reads it.
-- DNS, plus Settings → Pages → Custom domain in the repo. An apex domain wants the four GitHub Pages `A` records (or an `ALIAS`/`ANAME` if the
-  registrar supports one), a `www` subdomain wants a `CNAME` to `dsmedley.github.io`. Tick Enforce HTTPS once the certificate is issued.
-
-The workflow passes its own deployment URL to Hugo with `--baseURL`, so the config value is what drives local production builds and `check:links`.
-
 ## Email
 
 The site publishes `contact@dillonsmedley.com` on the contact page, the resume, and the header icons.

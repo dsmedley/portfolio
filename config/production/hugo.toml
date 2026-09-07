@@ -1,4 +1,4 @@
-baseURL = "https://dillonsmedley.com/"
+baseURL = "https://www.dillonsmedley.com/"
 
 [params]
 env = "production"
