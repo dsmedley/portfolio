@@ -1,0 +1,81 @@
+# -- PaperMod theme options --
+# https://github.com/adityatelange/hugo-PaperMod/wiki/Variables
+
+author = "Dillon Smedley"
+defaultTheme = "auto"
+disableThemeToggle = false
+
+ShowReadingTime = false
+ShowShareButtons = false
+ShowPostNavLinks = false
+ShowBreadCrumbs = true
+ShowCodeCopyButtons = true
+ShowWordCount = false
+ShowRssButtonInSectionTermList = false
+ShowToc = false
+disableScrollToTop = false
+hidemeta = false
+hideSummary = false
+comments = false
+
+keywords = [
+  "Dillon Smedley",
+  "software engineer",
+  "portfolio",
+  "Laravel",
+  "Vue",
+  "Hugo",
+  "developer tooling",
+  "build automation",
+]
+
+[label]
+text = "Dillon Smedley"
+
+# The landing page. layouts/index.html renders this profile block and then a
+# "Selected work" grid built from content/projects/.
+[profileMode]
+enabled = true
+title = "Dillon Smedley"
+subtitle = "Software engineer. I build web applications that survive their own maintenance, and the tooling that keeps them shippable."
+
+[[profileMode.buttons]]
+name = "Resume"
+url = "resume"
+
+[[profileMode.buttons]]
+name = "Get in touch"
+url = "contact"
+
+[[socialIcons]]
+name = "github"
+title = "GitHub"
+url = "https://github.com/dsmedley"
+
+[[socialIcons]]
+name = "gitlab"
+title = "GitLab"
+url = "https://gitlab.com/dsmedley"
+
+[[socialIcons]]
+name = "linkedin"
+title = "LinkedIn"
+url = "https://www.linkedin.com/in/dillon-smedley-a552a7157/"
+
+[[socialIcons]]
+name = "email"
+title = "Email"
+url = "mailto:contact@dillonsmedley.com"
+
+[assets]
+disableHLJS = true
+disableFingerprinting = false
+# TODO: add favicon files under static/ and point these at them.
+
+[cover]
+linkFullImages = true
+responsiveImages = true
+hidden = false
+
+[editPost]
+disabled = true

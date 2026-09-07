@@ -1,0 +1,112 @@
+{{- define "main" }}
+
+<header class="page-header">
+  {{- partial "breadcrumbs.html" . }}
+  <h1>{{ .Title }}</h1>
+  {{- with .Description }}
+  <div class="post-description">{{ . | markdownify }}</div>
+  {{- end }}
+</header>
+
+{{- $resume := hugo.Data.resume }}
+{{- $profile := hugo.Data.profile }}
+
+<div class="post-content resume">
+
+  {{- with $profile }}
+  <section class="resume-contact">
+    <ul>
+      {{- with .location }}<li>{{ . }}</li>{{ end }}
+      {{- with .email }}<li><a href="mailto:{{ . }}">{{ . }}</a></li>{{ end }}
+      {{- range .links }}
+      <li><a href="{{ .url }}" rel="noopener noreferrer">{{ .name }}</a></li>
+      {{- end }}
+    </ul>
+  </section>
+  {{- end }}
+
+  {{- with $resume.summary }}
+  <section class="resume-section">
+    <h2>Summary</h2>
+    <p>{{ . }}</p>
+  </section>
+  {{- end }}
+
+  {{- with $resume.skills }}
+  <section class="resume-section">
+    <h2>Skills</h2>
+    <dl class="resume-skills">
+      {{- range . }}
+      <dt>{{ .area }}</dt>
+      <dd>{{ delimit .items ", " }}</dd>
+      {{- end }}
+    </dl>
+  </section>
+  {{- end }}
+
+  {{- with $resume.experience }}
+  <section class="resume-section">
+    <h2>Experience</h2>
+    {{- range . }}
+    <article class="resume-entry">
+      <h3>{{ .role }} &middot; {{ .company }}</h3>
+      <p class="resume-entry-meta">
+        {{ .start }} &ndash; {{ .end }}{{ with .location }} &middot; {{ . }}{{ end }}
+      </p>
+      {{- with .highlights }}
+      <ul>
+        {{- range . }}
+        <li>{{ . }}</li>
+        {{- end }}
+      </ul>
+      {{- end }}
+    </article>
+    {{- end }}
+  </section>
+  {{- end }}
+
+  <section class="resume-section">
+    <h2>Selected projects</h2>
+    {{- with site.GetPage "/projects" }}
+    <dl class="resume-projects">
+      {{- range .Pages.ByWeight }}
+      <dt><a href="{{ .RelPermalink }}">{{ .Title }}</a></dt>
+      <dd>{{ .Params.summary | default .Description }}</dd>
+      {{- end }}
+    </dl>
+    {{- end }}
+  </section>
+
+  {{- with index hugo.Data "open-source" }}
+  <section class="resume-section">
+    <h2>Open source</h2>
+    <dl class="resume-projects">
+      {{- range .projects }}
+      <dt><a href="{{ .url }}" rel="noopener noreferrer">{{ .name }}</a></dt>
+      <dd>
+        {{ len .contributions }} merged
+        {{- if eq (len .contributions) 1 }} contribution{{ else }} contributions{{ end }}:
+        {{- $titles := slice }}
+        {{- range .contributions }}{{ $titles = $titles | append .title }}{{ end }}
+        {{ delimit $titles "; " }}.
+      </dd>
+      {{- end }}
+    </dl>
+    <p><a href="{{ "open-source" | relURL }}">Full details &rarr;</a></p>
+  </section>
+  {{- end }}
+
+  {{- with $resume.education }}
+  <section class="resume-section">
+    <h2>Education</h2>
+    <ul class="resume-education">
+      {{- range . }}
+      <li>{{ .credential }}, {{ .institution }}{{ with .year }} ({{ . }}){{ end }}</li>
+      {{- end }}
+    </ul>
+  </section>
+  {{- end }}
+
+</div>
+
+{{- end }}

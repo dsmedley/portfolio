@@ -1,0 +1,21 @@
+{
+  "name": "portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install:browsers": "playwright install --with-deps chromium firefox",
+    "test:e2e": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^26.5.0",
+    "@unlighthouse/cli": "^0.18.0",
+    "pa11y-ci": "^4.1.1",
+    "pa11y-ci-reporter-html": "^8.1.1",
+    "prettier": "^3.9.6",
+    "puppeteer": "^25.10.0",
+    "unlighthouse": "^0.18.0"
+  }
+}

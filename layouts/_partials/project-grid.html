@@ -1,0 +1,8 @@
+{{- /* Renders every page in the projects section as a grid of cards. */ -}}
+{{- with site.GetPage "/projects" }}
+<div class="project-grid">
+  {{- range .Pages.ByWeight }}
+  {{- partial "project-card.html" . }}
+  {{- end }}
+</div>
+{{- end }}

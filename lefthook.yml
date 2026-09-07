@@ -1,0 +1,47 @@
+pre-commit:
+  commands:
+    # Runs first so the formatter's output is what the other checks see.
+    format:
+      priority: 1
+      glob:
+        - "*.{md,json,yml,yaml,css,ts,js}"
+        - "**/*.{md,json,yml,yaml,css,ts,js}"
+      run: mise run check:format --fix {staged_files} && git add {staged_files}
+      skip:
+        - merge
+        - rebase
+    check-markdown:
+      priority: 2
+      glob:
+        - "content/*.md"
+        - "content/**/*.md"
+      run: mise run check:markdown {staged_files}
+      skip:
+        - merge
+        - rebase
+    check-spelling:
+      glob:
+        - "content/*.md"
+        - "content/**/*.md"
+        - "data/*.json"
+        - "data/**/*.json"
+        - "layouts/*.html"
+        - "layouts/**/*.html"
+      run: mise run check:spelling {staged_files}
+      skip:
+        - merge
+        - rebase
+    check-toml:
+      glob:
+        - "config/*.toml"
+        - "config/**/*.toml"
+        - "mise.toml"
+      run: mise run check:toml {staged_files}
+      skip:
+        - merge
+        - rebase
+    check-links:
+      run: mise run check:links
+      skip:
+        - merge
+        - rebase

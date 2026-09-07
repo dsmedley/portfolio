@@ -1,0 +1,37 @@
+theme = "PaperMod"
+defaultContentLanguage = "en"
+
+enableRobotsTXT = true
+enableEmoji = true
+enableInlineShortcodes = true
+
+buildDrafts = false
+buildFuture = false
+buildExpired = false
+
+# Which sections feed the "recent" listings. Only projects are listed; the
+# standalone pages (about, contact, resume) are reached from the menu.
+[params]
+mainSections = ["projects"]
+
+[pagination]
+pagerSize = 10
+
+
+[minify]
+disableXML = true
+
+[taxonomies]
+tag = "tags"
+
+[sitemap]
+changefreq = "weekly"
+filename = "sitemap.xml"
+priority = 0.5
+
+[outputs]
+home = ["HTML", "RSS"]
+
+[caches]
+[caches.images]
+dir = ":cacheDir/images"

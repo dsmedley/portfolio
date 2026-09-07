@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+#MISE description="Check for broken links in the generated site. If the CI environment variable is set it expects the hugo site to be built already."
+#USAGE flag "--external" help="Also check external links over the network (default: offline, internal links only)"
+set -euo pipefail
+
+offline=(--offline)
+accept=()
+if [ "${usage_external:-false}" = "true" ]; then
+  offline=()
+  # LinkedIn answers automated requests with HTTP 999 rather than a real status.
+  # Accepting that one code keeps the URL checked (a genuine 404 still fails)
+  # without the host permanently reporting as unknown.
+  accept=(--accept '200..=299,999')
+fi
+
+# Link-check against the same base URL the site is deployed under. Building with
+# a bare "/" instead would be simpler, but PaperMod's breadcrumb JSON-LD derives
+# its path by stripping site.Home.Permalink from the parent permalink, which
+# removes every slash when the base URL is just "/" and emits invalid JSON.
+# SITE_BASE_URL lets CI pass the URL it actually built with (the configure-pages
+# base_url on GitHub) when it differs from the config value.
+base="${SITE_BASE_URL:-$(sed -n 's/^baseURL *= *"\(.*\)"/\1/p' config/production/hugo.toml)}"
+base="${base%/}"
+host_and_path="${base#*://}"
+subpath="${host_and_path#*/}"
+[ "$subpath" = "$host_and_path" ] && subpath=""
+
+if [ -z "${CI:-}" ]; then
+  hugo --environment production --minify --baseURL "$base/" --cleanDestinationDir
+fi
+
+# Rewrite absolute site URLs to the local build, so links resolve offline.
+remaps=(--remap "^${base}(/.*)?\$ file://$PWD/public\$1")
+if [ -n "$subpath" ]; then
+  # Hugo writes subpath-prefixed paths; collapse them onto the output root.
+  remaps+=(--remap "^file://$PWD/public/${subpath}(/.*)?\$ file://$PWD/public\$1")
+fi
+lychee "${offline[@]}" "${accept[@]}" --root-dir "$PWD/public" "${remaps[@]}" public/

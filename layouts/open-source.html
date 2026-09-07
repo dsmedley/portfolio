@@ -1,0 +1,46 @@
+{{- define "main" }}
+
+<header class="page-header">
+  {{- partial "breadcrumbs.html" . }}
+  <h1>{{ .Title }}</h1>
+  {{- with .Description }}
+  <div class="post-description">{{ . | markdownify }}</div>
+  {{- end }}
+</header>
+
+{{- with .Content }}
+<div class="post-content">{{ . }}</div>
+{{- end }}
+
+{{- $data := index hugo.Data "open-source" }}
+{{- with $data }}
+<div class="post-content oss">
+  {{- range .projects }}
+  <section class="oss-project">
+    <h2>
+      <a href="{{ .url }}" rel="noopener noreferrer" target="_blank">{{ .name }}</a>
+    </h2>
+    <p class="oss-project-description">{{ .description }}</p>
+
+    <ol class="oss-list">
+      {{- range .contributions }}
+      <li class="oss-item">
+        <h3 class="oss-item-title">
+          <a href="{{ .url }}" rel="noopener noreferrer" target="_blank">{{ .title }}</a>
+        </h3>
+        <p class="oss-item-meta">
+          <code>{{ .repo }}</code>
+          <span>#{{ .number }}</span>
+          <span>merged {{ .merged }}</span>
+          {{- with .diff }}<span>{{ . }}</span>{{ end }}
+        </p>
+        <p class="oss-item-summary">{{ .summary }}</p>
+      </li>
+      {{- end }}
+    </ol>
+  </section>
+  {{- end }}
+</div>
+{{- end }}
+
+{{- end }}

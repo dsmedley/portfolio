@@ -1,0 +1,22 @@
+{
+  "name": "Dillon Smedley",
+  "headline": "Software engineer",
+  "email": "contact@dillonsmedley.com",
+  "links": [
+    {
+      "name": "GitHub",
+      "icon": "github",
+      "url": "https://github.com/dsmedley"
+    },
+    {
+      "name": "GitLab",
+      "icon": "gitlab",
+      "url": "https://gitlab.com/dsmedley"
+    },
+    {
+      "name": "LinkedIn",
+      "icon": "linkedin",
+      "url": "https://www.linkedin.com/in/dillon-smedley-a552a7157/"
+    }
+  ]
+}

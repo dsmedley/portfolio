@@ -1,0 +1,205 @@
+name: Hugo Build and Deploy
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          fetch-depth: 0
+          lfs: true
+
+      - name: Install packages
+        uses: jdx/mise-action@v4
+
+      - name: Verify installations
+        run: |
+          echo "Hugo: $(hugo version)"
+          echo "Node.js: $(node --version)"
+          echo "Markdownlint: $(markdownlint-cli2 --help | head -1)"
+          echo "Cspell: $(cspell --version)"
+          echo "Taplo: $(taplo --version)"
+          echo "Lychee: $(lychee --version)"
+
+      - name: Run checks
+        run: mise run check
+
+      - name: Configure GitHub Pages
+        id: pages
+        uses: actions/configure-pages@v6
+
+      - name: Cache restore
+        id: cache-restore
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ runner.temp }}/hugo_cache
+          key: hugo-${{ github.run_id }}
+          restore-keys: hugo-
+
+      - name: Build Hugo site
+        run: |
+          hugo build \
+            --environment production \
+            --gc \
+            --minify \
+            --baseURL "${{ steps.pages.outputs.base_url }}/" \
+            --cacheDir "${{ runner.temp }}/hugo_cache"
+
+      - name: Check links
+        # check:links resolves absolute site URLs against the build it is given,
+        # so tell it the URL this build actually used.
+        run: mise run check:links
+        env:
+          SITE_BASE_URL: ${{ steps.pages.outputs.base_url }}
+
+      - name: Cache save
+        id: cache-save
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ runner.temp }}/hugo_cache
+          key: ${{ steps.cache-restore.outputs.cache-primary-key }}
+
+      - name: Report build size
+        run: echo "Publishing $(find public -type f | wc -l) files to GitHub Pages"
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: ./public
+
+  test:
+    name: Playwright Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          fetch-depth: 0
+          lfs: true
+
+      - name: Install packages
+        uses: jdx/mise-action@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npm run install:browsers
+
+      - name: Restore Hugo cache
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ runner.temp }}/hugo_cache
+          key: hugo-${{ github.run_id }}
+          restore-keys: hugo-
+
+      - name: Run Playwright tests
+        run: npm run test:e2e
+        env:
+          HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
+
+      - uses: actions/upload-artifact@v7
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+  a11y:
+    name: Accessibility
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          fetch-depth: 0
+          lfs: true
+
+      - name: Install packages
+        uses: jdx/mise-action@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Restore Hugo cache
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ runner.temp }}/hugo_cache
+          key: hugo-${{ github.run_id }}
+          restore-keys: hugo-
+
+      - name: Run accessibility checks
+        run: mise run check:a11y
+        env:
+          HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
+
+      - uses: actions/upload-artifact@v7
+        if: ${{ !cancelled() }}
+        with:
+          name: pa11y-report
+          path: .pa11y-report/
+          retention-days: 30
+
+  links-external:
+    name: External Links
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          lfs: true
+
+      - name: Install packages
+        uses: jdx/mise-action@v4
+
+      - name: Build site
+        run: hugo build --environment production --minify
+
+      # Advisory: external links rot on someone else's schedule, and a network
+      # blip should not block a deploy. This is what catches a linked project
+      # going private or a domain lapsing.
+      - name: Check external links
+        continue-on-error: true
+        env:
+          CI: "true"
+          # Lychee rate-limits against GitHub without a token.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: mise run check:links --external
+
+  deploy:
+    name: Deploy to GitHub Pages
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: [build, test]
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

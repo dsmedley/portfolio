@@ -1,0 +1,17 @@
+# Hugo Go templates: {{ }} is not parseable HTML, prettier errors on these
+layouts/
+archetypes/
+
+# Build output and vendored code
+public/
+resources/
+themes/
+node_modules/
+playwright-report/
+test-results/
+.unlighthouse/
+.pa11y-report/
+
+# Generated or lock files
+package-lock.json
+mise.lock

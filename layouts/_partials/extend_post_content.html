@@ -1,0 +1,12 @@
+{{- /* PaperMod extension point: render a project page's external links after the
+       article body, so the links live in frontmatter rather than in prose. */ -}}
+{{- with .Params.externalLinks }}
+<div class="project-links">
+  <h2>Links</h2>
+  <ul>
+    {{- range . }}
+    <li><a href="{{ .url }}" rel="noopener noreferrer" target="_blank">{{ .name }} &nearr;</a></li>
+    {{- end }}
+  </ul>
+</div>
+{{- end }}

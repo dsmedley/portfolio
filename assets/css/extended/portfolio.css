@@ -1,0 +1,560 @@
+/* ==========================================================================
+   Warm-signal theme layered on PaperMod.
+
+   PaperMod ships a purely greyscale palette. Everything here adds one warm
+   accent plus the typographic weight the stock theme lacks. Accent values are
+   contrast-checked against the surfaces they sit on: #A34A12 is 5.92:1 on
+   white and 5.67:1 on a light card; #E8A05C is 7.64:1 on the dark ground and
+   6.18:1 on a dark card. All clear WCAG 2 AA for body text.
+   ========================================================================== */
+
+:root {
+  /* PaperMod ships --main-width: 720px, tuned for a narrow blog column. These
+     pages carry wide tables and long technical prose, so the stock width left
+     them scrolling further than they needed to. Measured on the longest project
+     page at a 1440px viewport: 720px runs ~76 characters per line, 880px runs
+     ~93 and cuts the page height by 12%, 1040px runs ~110. 880 is the widest
+     setting that keeps prose inside a comfortable measure. --nav-width rises
+     with it so the header still frames the content. */
+  --main-width: 880px;
+  --nav-width: 1120px;
+
+  --accent: #a34a12;
+  --accent-strong: #8f3f0e;
+  --accent-contrast: #ffffff;
+  --accent-wash: rgba(163, 74, 18, 0.08);
+  --accent-rule: rgba(163, 74, 18, 0.35);
+  --display-tracking: -0.022em;
+}
+
+:root[data-theme="dark"] {
+  --accent: #e8a05c;
+  --accent-strong: #f2b279;
+  --accent-contrast: #1d1e20;
+  --accent-wash: rgba(232, 160, 92, 0.1);
+  --accent-rule: rgba(232, 160, 92, 0.32);
+}
+
+/* --------------------------------------------------------------------------
+   Hero
+   -------------------------------------------------------------------------- */
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+  padding: 3.5rem 0 0.5rem;
+  text-align: center;
+}
+
+.hero-avatar,
+.hero-monogram {
+  width: 132px;
+  height: 132px;
+  border-radius: 50%;
+}
+
+.hero-avatar {
+  object-fit: cover;
+  /* A soft accent ring reads as intentional framing rather than a border. */
+  box-shadow:
+    0 0 0 3px var(--theme),
+    0 0 0 5px var(--accent-rule);
+}
+
+/* Shown until a real photo is added at assets/img/profile.{jpg,png,webp}. */
+.hero-monogram {
+  display: grid;
+  place-items: center;
+  background: var(--accent-wash);
+  box-shadow:
+    0 0 0 3px var(--theme),
+    0 0 0 5px var(--accent-rule);
+  color: var(--accent);
+  font-size: 2.9rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  user-select: none;
+}
+
+.hero-name {
+  margin: 0;
+  font-size: 2.9rem;
+  font-weight: 700;
+  letter-spacing: var(--display-tracking);
+  line-height: 1.05;
+}
+
+.hero-rule {
+  width: 56px;
+  height: 3px;
+  border: 0;
+  margin: 0;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+.hero-subtitle {
+  max-width: 34rem;
+  margin: 0;
+  color: var(--secondary);
+  font-size: 1.08rem;
+  line-height: 1.6;
+}
+
+.hero-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.7rem;
+}
+
+.hero-button {
+  padding: 0.5rem 1.15rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition:
+    transform 0.12s ease,
+    background 0.12s ease;
+}
+
+.hero-button:hover {
+  transform: translateY(-1px);
+}
+
+.hero-button-primary {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.hero-button-primary:hover {
+  background: var(--accent-strong);
+}
+
+.hero-button-secondary {
+  border-color: var(--tertiary);
+  color: var(--primary);
+}
+
+.hero-button-secondary:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   Stats strip
+   -------------------------------------------------------------------------- */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 1.25rem;
+  margin: 2.75rem 0 0;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  list-style: none;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-value {
+  display: block;
+  color: var(--accent);
+  font-size: 2.1rem;
+  font-weight: 700;
+  letter-spacing: var(--display-tracking);
+  line-height: 1.1;
+}
+
+.stat-label {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+
+/* Some stats link onward. Without this they render identically to the plain
+   labels and nobody discovers they are clickable. */
+.stat-label a {
+  color: var(--accent);
+  box-shadow: 0 1px 0 var(--accent-rule);
+}
+
+.stat-label a:hover {
+  box-shadow: 0 1px 0 var(--accent);
+}
+
+.stat-detail {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--secondary);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+/* --------------------------------------------------------------------------
+   Section headings
+   -------------------------------------------------------------------------- */
+
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0 0 1.25rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: var(--display-tracking);
+}
+
+.section-label::before {
+  content: "";
+  width: 20px;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 2px;
+  flex: none;
+}
+
+.home-section {
+  margin: 3rem 0 0;
+}
+
+.home-section-more {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.5rem;
+  margin: 1.5rem 0 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.home-section-more a {
+  color: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   Project cards
+   -------------------------------------------------------------------------- */
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+  gap: 1.25rem;
+  margin: 1.5rem 0;
+}
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.35rem;
+  background: var(--entry);
+  border-radius: var(--radius);
+  /* The accent rule is what stops these reading as identical grey slabs. */
+  border-top: 3px solid var(--accent);
+  transition:
+    transform 0.14s ease,
+    box-shadow 0.14s ease;
+}
+
+.project-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.project-card-title {
+  margin: 0;
+  font-size: 1.22rem;
+  font-weight: 700;
+  letter-spacing: -0.012em;
+  line-height: 1.3;
+}
+
+.project-card-title a {
+  color: var(--primary);
+}
+
+.project-card:hover .project-card-title a {
+  color: var(--accent);
+}
+
+.project-card-summary {
+  margin: 0;
+  color: var(--secondary);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.project-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-card-tags li {
+  padding: 0.15rem 0.6rem;
+  background: var(--accent-wash);
+  border-radius: 999px;
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.project-card-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: auto 0 0;
+  padding-top: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.project-card-links a {
+  color: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   Project pages: external links from frontmatter
+   -------------------------------------------------------------------------- */
+
+.project-links {
+  margin-top: 2rem;
+  padding: 1rem 1.25rem;
+  background: var(--accent-wash);
+  border-radius: var(--radius);
+}
+
+.project-links h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+}
+
+.project-links ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.project-links a {
+  color: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   Resume
+   -------------------------------------------------------------------------- */
+
+.resume-section {
+  margin-top: 2.5rem;
+}
+
+.resume-section h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 0.9rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.resume-section h2::before {
+  content: "";
+  width: 16px;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 2px;
+  flex: none;
+}
+
+.resume-contact ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--secondary);
+  font-size: 0.95rem;
+}
+
+.resume-contact a {
+  color: var(--accent);
+}
+
+.resume-skills {
+  display: grid;
+  grid-template-columns: minmax(8rem, max-content) 1fr;
+  gap: 0.5rem 1.5rem;
+  margin: 0;
+}
+
+.resume-skills dt {
+  font-weight: 600;
+}
+
+.resume-skills dd {
+  margin: 0;
+  color: var(--secondary);
+}
+
+.resume-entry {
+  margin-bottom: 1.75rem;
+  padding-left: 1rem;
+  border-left: 2px solid var(--accent-rule);
+}
+
+.resume-entry h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.resume-entry-meta {
+  margin: 0.15rem 0 0.5rem;
+  color: var(--secondary);
+  font-size: 0.9rem;
+}
+
+.resume-projects dt {
+  font-weight: 600;
+}
+
+.resume-projects dd {
+  margin: 0 0 1rem;
+  color: var(--secondary);
+}
+
+/* --------------------------------------------------------------------------
+   Open source contributions
+   -------------------------------------------------------------------------- */
+
+.oss-project {
+  margin-top: 2.5rem;
+}
+
+.oss-project h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 0.25rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.oss-project h2::before {
+  content: "";
+  width: 16px;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 2px;
+  flex: none;
+}
+
+.oss-project-description {
+  margin: 0 0 1.25rem;
+  color: var(--secondary);
+  font-size: 0.95rem;
+}
+
+.oss-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.oss-item {
+  margin-bottom: 1.75rem;
+  padding-left: 1rem;
+  border-left: 2px solid var(--accent-rule);
+}
+
+.oss-item-title {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.4;
+}
+
+.oss-item-title a {
+  color: var(--primary);
+}
+
+.oss-item-title a:hover {
+  color: var(--accent);
+}
+
+.oss-item-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.9rem;
+  margin: 0.35rem 0 0.55rem;
+  color: var(--secondary);
+  font-size: 0.85rem;
+}
+
+.oss-item-meta code {
+  background: var(--accent-wash);
+  border-radius: var(--radius);
+  padding: 0.05rem 0.45rem;
+  color: var(--accent);
+  font-size: 0.85em;
+}
+
+.oss-item-summary {
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* --------------------------------------------------------------------------
+   Shared typography and prose links
+   -------------------------------------------------------------------------- */
+
+.page-header h1 {
+  letter-spacing: var(--display-tracking);
+}
+
+.post-content a,
+.post-description a {
+  color: var(--accent);
+  box-shadow: 0 1px 0 var(--accent-rule);
+}
+
+.post-content a:hover,
+.post-description a:hover {
+  box-shadow: 0 1px 0 var(--accent);
+}
+
+/* PaperMod underlines content links by default; the accent rule replaces it. */
+.post-content a:not(.hero-button) {
+  text-decoration: none;
+}
+
+@media (max-width: 40rem) {
+  .hero {
+    padding-top: 2.25rem;
+  }
+
+  .hero-name {
+    font-size: 2.2rem;
+  }
+
+  .stats {
+    gap: 1.5rem;
+  }
+
+  .resume-skills {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+  }
+
+  .resume-skills dd {
+    margin-bottom: 0.6rem;
+  }
+}

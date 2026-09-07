@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+#MISE description="Check formatting with prettier (markdown, JSON, YAML, CSS, TS)"
+#MISE alias="check:fmt"
+#MISE depends=["sync:npm"]
+#USAGE flag "--fix" help="Rewrite the files in place instead of only reporting"
+#USAGE arg "[files]" var=#true help="Files to check (default: the whole repo, minus .prettierignore)"
+set -euo pipefail
+
+# Hugo templates under layouts/ and archetypes/ are excluded in .prettierignore:
+# Go template actions are not parseable HTML and prettier errors on them.
+mode=(--check)
+[ "${usage_fix:-false}" = "true" ] && mode=(--write)
+
+if [ -n "${usage_files:-}" ]; then
+  eval "files=(${usage_files})"
+else
+  files=(.)
+fi
+
+npx prettier "${mode[@]}" "${files[@]}"

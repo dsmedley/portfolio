@@ -1,0 +1,21 @@
+{
+  "note": "Every figure is checkable. The Junk Yard has been live since October 2015 and has been rebuilt twice since (hand-written PHP, then Laravel with Blade, then Vue 3 with Inertia). The upstream count is the merged pull requests listed in open-source.json.",
+  "items": [
+    {
+      "value": "10+",
+      "label": "years running one site",
+      "detail": "The Junk Yard, live since October 2015"
+    },
+    {
+      "value": "3",
+      "label": "generations of the same site",
+      "detail": "Hand-written PHP, then Laravel and Blade, then Vue 3 and Inertia"
+    },
+    {
+      "value": "7",
+      "label": "pull requests merged upstream",
+      "detail": "Backstage, OpenShift, cookiecutterassert",
+      "url": "open-source"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{{- define "main" }}
+
+{{- partial "hero.html" . }}
+{{- partial "stats.html" . }}
+
+<section class="home-section" aria-labelledby="selected-work">
+  <h2 id="selected-work" class="section-label">Selected work</h2>
+  {{- partial "project-grid.html" . }}
+  <p class="home-section-more">
+    <a href="{{ "projects" | relURL }}">All projects &rarr;</a>
+    <a href="{{ "open-source" | relURL }}">Open source contributions &rarr;</a>
+  </p>
+</section>
+
+{{- end }}

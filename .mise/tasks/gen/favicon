@@ -1,0 +1,135 @@
+#!/usr/bin/env python3
+"""Generate the favicon set in static/ from a 5x7 "DS" monogram bitmap.
+
+#MISE description="Regenerate the favicon set in static/ from the DS monogram"
+#MISE alias="gen:icons"
+
+Kept as a task rather than as five checked-in binaries with no source, so the
+mark can be recoloured or resized without hunting for an image editor. Writes
+favicon.ico, favicon-16x16.png, favicon-32x32.png, apple-touch-icon.png and
+safari-pinned-tab.svg, which are exactly the files PaperMod's head references.
+"""
+import os
+import struct
+import zlib
+
+BG = (0x1F, 0x24, 0x30, 0xFF)
+FG = (0xEC, 0xEC, 0xEE, 0xFF)
+
+# 5x7 glyphs. One string per row, "#" is an inked pixel.
+GLYPHS = {
+    "D": ["####.", "#...#", "#...#", "#...#", "#...#", "#...#", "####."],
+    "S": [".####", "#....", "#....", ".###.", "....#", "....#", "####."],
+}
+WORD = "DS"
+GW, GH = 5, 7
+GAP = 1
+
+
+def monogram():
+    """Lay the glyphs out side by side; returns (width, height, set of inked cells)."""
+    width = len(WORD) * GW + (len(WORD) - 1) * GAP
+    cells = set()
+    for i, char in enumerate(WORD):
+        x0 = i * (GW + GAP)
+        for y, row in enumerate(GLYPHS[char]):
+            for x, pixel in enumerate(row):
+                if pixel == "#":
+                    cells.add((x0 + x, y))
+    return width, GH, cells
+
+
+def render(size):
+    """Render the monogram centred on a rounded square, as RGBA rows."""
+    mw, mh, cells = monogram()
+    # Largest whole-pixel scale that leaves a margin of roughly 12% per side.
+    scale = max(1, int((size * 0.76) // mw))
+    px_w, px_h = mw * scale, mh * scale
+    off_x, off_y = (size - px_w) // 2, (size - px_h) // 2
+    radius = max(1, round(size * 0.18))
+
+    rows = []
+    for y in range(size):
+        row = bytearray()
+        for x in range(size):
+            # Round the corners by testing distance from the corner centre.
+            cx = radius - 1 if x < radius else (size - radius if x >= size - radius else x)
+            cy = radius - 1 if y < radius else (size - radius if y >= size - radius else y)
+            if (x - cx) ** 2 + (y - cy) ** 2 > radius**2:
+                row += bytes((0, 0, 0, 0))
+                continue
+            gx, gy = (x - off_x) // scale, (y - off_y) // scale
+            inked = (
+                0 <= x - off_x < px_w
+                and 0 <= y - off_y < px_h
+                and (gx, gy) in cells
+            )
+            row += bytes(FG if inked else BG)
+        rows.append(bytes(row))
+    return rows
+
+
+def png(size):
+    rows = render(size)
+    raw = b"".join(b"\x00" + row for row in rows)
+
+    def chunk(tag, data):
+        body = tag + data
+        return struct.pack(">I", len(data)) + body + struct.pack(">I", zlib.crc32(body))
+
+    ihdr = struct.pack(">IIBBBBB", size, size, 8, 6, 0, 0, 0)
+    return (
+        b"\x89PNG\r\n\x1a\n"
+        + chunk(b"IHDR", ihdr)
+        + chunk(b"IDAT", zlib.compress(raw, 9))
+        + chunk(b"IEND", b"")
+    )
+
+
+def ico(sizes):
+    """An ICO wrapping PNG images, which every currently supported browser reads."""
+    images = [(s, png(s)) for s in sizes]
+    header = struct.pack("<HHH", 0, 1, len(images))
+    offset = len(header) + 16 * len(images)
+    entries, blobs = b"", b""
+    for size, data in images:
+        entries += struct.pack(
+            "<BBBBHHII", size if size < 256 else 0, size if size < 256 else 0,
+            0, 0, 1, 32, len(data), offset,
+        )
+        blobs += data
+        offset += len(data)
+    return header + entries + blobs
+
+
+def svg():
+    """Monochrome mask for Safari's pinned tab, one rect per inked cell."""
+    mw, mh, cells = monogram()
+    rects = "".join(
+        f'<rect x="{x}" y="{y}" width="1" height="1"/>' for x, y in sorted(cells)
+    )
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {mw} {mh}" '
+        f'shape-rendering="crispEdges"><g fill="black">{rects}</g></svg>\n'
+    )
+
+
+def main():
+    # mise runs file tasks from the project root and exports MISE_PROJECT_ROOT.
+    root = os.path.join(os.environ.get("MISE_PROJECT_ROOT", os.getcwd()), "static")
+    os.makedirs(root, exist_ok=True)
+    written = {
+        "favicon.ico": ico([16, 32, 48]),
+        "favicon-16x16.png": png(16),
+        "favicon-32x32.png": png(32),
+        "apple-touch-icon.png": png(180),
+        "safari-pinned-tab.svg": svg().encode(),
+    }
+    for name, data in written.items():
+        with open(os.path.join(root, name), "wb") as fh:
+            fh.write(data)
+        print(f"wrote static/{name} ({len(data)} bytes)")
+
+
+if __name__ == "__main__":
+    main()

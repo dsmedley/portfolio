@@ -1,0 +1,20 @@
+{{- /* Renders one project as a card. Called with a project page as the context. */ -}}
+<article class="project-card">
+  <h3 class="project-card-title">
+    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+  </h3>
+  <p class="project-card-summary">{{ .Params.summary | default .Description }}</p>
+  {{- with .Params.tags }}
+  <ul class="project-card-tags">
+    {{- range . }}
+    <li>{{ . }}</li>
+    {{- end }}
+  </ul>
+  {{- end }}
+  <p class="project-card-links">
+    <a href="{{ .RelPermalink }}">Read more &rarr;</a>
+    {{- range .Params.externalLinks }}
+    <a href="{{ .url }}" rel="noopener noreferrer" target="_blank">{{ .name }} &nearr;</a>
+    {{- end }}
+  </p>
+</article>

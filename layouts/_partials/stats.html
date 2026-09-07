@@ -1,0 +1,16 @@
+{{- /* Figures from data/stats.json. Each one is independently verifiable; see
+       the `note` field in that file for how they were derived. */ -}}
+{{- with (index hugo.Data "stats").items }}
+<ul class="stats">
+  {{- range . }}
+  <li class="stat">
+    <span class="stat-value">{{ .value }}</span>
+    <span class="stat-label">
+      {{- if .url }}<a href="{{ .url | relURL }}">{{ .label }}</a>
+      {{- else }}{{ .label }}{{ end -}}
+    </span>
+    {{- with .detail }}<span class="stat-detail">{{ . }}</span>{{ end }}
+  </li>
+  {{- end }}
+</ul>
+{{- end }}

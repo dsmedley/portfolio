@@ -1,0 +1,4 @@
+baseURL = "https://dillonsmedley.com/"
+
+[params]
+env = "production"

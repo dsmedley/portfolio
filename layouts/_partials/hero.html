@@ -1,0 +1,41 @@
+{{- /* Landing hero. Replaces PaperMod's index_profile.html so the photo can
+       fall back gracefully and the buttons can carry a primary/secondary
+       hierarchy. Reads the same site.Params.profileMode block as the theme. */ -}}
+{{- with site.Params.profileMode }}
+<section class="hero">
+
+  {{- /* Picked up automatically once a file exists at assets/img/profile.*.
+         Until then the monogram below stands in, so the hero never renders an
+         empty circle. */ -}}
+  {{- $photo := "" }}
+  {{- range slice "img/profile.jpg" "img/profile.jpeg" "img/profile.png" "img/profile.webp" }}
+    {{- if not $photo }}{{ with resources.Get . }}{{ $photo = . }}{{ end }}{{ end }}
+  {{- end }}
+
+  {{- if $photo }}
+  {{- $img := $photo.Fill "264x264 Center" }}
+  <img class="hero-avatar" src="{{ $img.RelPermalink }}" width="132" height="132"
+       alt="{{ site.Params.author | default site.Title }}" />
+  {{- else }}
+  <div class="hero-monogram" aria-hidden="true">DS</div>
+  {{- end }}
+
+  <h1 class="hero-name">{{ .title | default site.Title }}</h1>
+  <hr class="hero-rule" />
+  {{- with .subtitle }}
+  <p class="hero-subtitle">{{ . | markdownify }}</p>
+  {{- end }}
+
+  {{- partial "social_icons.html" . }}
+
+  {{- with .buttons }}
+  <div class="hero-buttons">
+    {{- range $i, $b := . }}
+    <a class="hero-button {{ if eq $i 0 }}hero-button-primary{{ else }}hero-button-secondary{{ end }}"
+       href="{{ trim $b.url " " | relURL }}">{{ $b.name }}</a>
+    {{- end }}
+  </div>
+  {{- end }}
+
+</section>
+{{- end }}

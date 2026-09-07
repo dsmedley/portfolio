@@ -1,0 +1,8 @@
+disabled = false
+locale = "en-us"
+label = "English"
+weight = 1
+title = "Dillon Smedley"
+
+[params]
+description = "Software engineer. I build web applications that survive their own maintenance, and the tooling that keeps them shippable."

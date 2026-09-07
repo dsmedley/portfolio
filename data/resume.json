@@ -1,0 +1,54 @@
+{
+  "summary": "DRAFT Full-stack engineer with a bias toward things that stay maintainable. Comfortable owning an application end to end: PHP and Laravel with Vue on the application side, Go-templated static sites on the content side, and a reproducible toolchain, test suite and CI pipeline sitting under both.",
+  "skills": [
+    {
+      "area": "Backend",
+      "items": ["PHP 8", "Laravel 12", "Eloquent", "MySQL", "REST APIs", "PHPUnit"]
+    },
+    {
+      "area": "Frontend",
+      "items": ["Vue 3", "Inertia.js", "Vuetify", "TypeScript", "Vite", "Vitest"]
+    },
+    {
+      "area": "Sites & content",
+      "items": ["Hugo", "Go templates", "Sveltia CMS", "responsive image pipelines"]
+    },
+    {
+      "area": "Tooling & delivery",
+      "items": ["mise", "GitLab CI", "GitHub Actions", "lefthook", "Docker Compose", "Git LFS"]
+    },
+    {
+      "area": "Quality",
+      "items": ["Playwright", "pa11y (WCAG 2 AA)", "Unlighthouse", "lychee", "cspell", "markdownlint"]
+    }
+  ],
+  "experience": [
+    {
+      "role": "TODO: job title",
+      "company": "TODO: employer",
+      "location": "TODO: city, state",
+      "start": "TODO: YYYY-MM",
+      "end": "Present",
+      "highlights": [
+        "TODO: replace these placeholders with real work history.",
+        "TODO: lead with an outcome, not a responsibility (what changed, and by how much).",
+        "TODO: name the stack only where it is load-bearing to the story."
+      ]
+    },
+    {
+      "role": "TODO: previous job title",
+      "company": "TODO: previous employer",
+      "location": "TODO: city, state",
+      "start": "TODO: YYYY-MM",
+      "end": "TODO: YYYY-MM",
+      "highlights": ["TODO: replace with real work history."]
+    }
+  ],
+  "education": [
+    {
+      "credential": "TODO: degree or certification",
+      "institution": "TODO: institution",
+      "year": "TODO: YYYY"
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "note": "Every entry here is a pull request merged into an upstream project. Verify with: https://github.com/pulls?q=is%3Apr+author%3Adsmedley+is%3Amerged",
+  "projects": [
+    {
+      "name": "Backstage",
+      "url": "https://github.com/backstage/backstage",
+      "description": "Spotify's open platform for building developer portals. TechDocs is the documentation piece, rendering MkDocs sites from docs that live next to the code.",
+      "contributions": [
+        {
+          "title": "Add support for optional PyMdown blocks extension syntax",
+          "repo": "backstage/mkdocs-techdocs-core",
+          "number": 247,
+          "url": "https://github.com/backstage/mkdocs-techdocs-core/pull/247",
+          "merged": "2025-02-28",
+          "diff": "+128 / -20 across 4 files",
+          "summary": "Added a use_pymdownx_blocks option that moves admonitions, details and tabs over to PyMdown's blocks syntax, which unlike the legacy extensions doesn't care about indentation. Both syntaxes emit the same output and collide if you run them together, so switching the option on turns the legacy extensions off rather than stacking them. Defaults to false, so nobody's existing docs changed."
+        },
+        {
+          "title": "Added plugin config definition",
+          "repo": "backstage/mkdocs-techdocs-core",
+          "number": 260,
+          "url": "https://github.com/backstage/mkdocs-techdocs-core/pull/260",
+          "merged": "2025-03-19",
+          "diff": "+51 / -50 across 4 files",
+          "summary": "Follow-up to the option above. The plugin had no config_scheme at all, so MkDocs logged an 'unrecognised configuration' warning for every option it happily accepted, use_material_search and the new use_pymdownx_blocks included. Declaring the schema the way the MkDocs plugin guide lays out got the plugin validating its own options and shut the warnings up."
+        },
+        {
+          "title": "Fixed changelog for fromConfig and moved config example into the README's config section",
+          "repo": "backstage/backstage",
+          "number": 18899,
+          "url": "https://github.com/backstage/backstage/pull/18899",
+          "merged": "2023-08",
+          "diff": "documentation",
+          "summary": "A documentation fix in the main Backstage monorepo. Corrected the changelog entry for fromConfig and moved a config example into the part of the README where someone would actually go looking for it."
+        }
+      ]
+    },
+    {
+      "name": "OpenShift Jenkins Sync Plugin",
+      "url": "https://github.com/openshift/jenkins-sync-plugin",
+      "description": "Red Hat's Jenkins plugin, responsible for keeping OpenShift BuildConfig objects in sync with Jenkins jobs and agent pod templates.",
+      "contributions": [
+        {
+          "title": "Bug 2064139: Fix configmap update bug that constantly purges templates with no changes",
+          "repo": "openshift/jenkins-sync-plugin",
+          "number": 418,
+          "url": "https://github.com/openshift/jenkins-sync-plugin/pull/418",
+          "merged": "2022-03-15",
+          "diff": "+13 / -8 in 1 file",
+          "summary": "Agent pod templates were getting purged and re-added every five minutes even when absolutely nothing had changed, which could leave agents missing at the exact moment a job needed one. The cause was an assumption about fabric8's watch API. Its onUpdate callback also fires on a periodic re-list, not only on a genuine modification. Comparing resource versions before applying the update filtered out the no-op events. Thirteen lines. All of the difficulty was in the diagnosis."
+        },
+        {
+          "title": "Fixed improperly formatted logger statements",
+          "repo": "openshift/jenkins-sync-plugin",
+          "number": 417,
+          "url": "https://github.com/openshift/jenkins-sync-plugin/pull/417",
+          "merged": "2022-03",
+          "diff": "logging",
+          "summary": "Fixed malformed logger format strings so the messages print their values instead of the placeholders."
+        },
+        {
+          "title": "Config log warning",
+          "repo": "openshift/jenkins-sync-plugin",
+          "number": 416,
+          "url": "https://github.com/openshift/jenkins-sync-plugin/pull/416",
+          "merged": "2022-03",
+          "diff": "logging",
+          "summary": "Toned down a configuration warning that fired during completely normal operation, cutting noise out of the plugin's logs."
+        }
+      ]
+    },
+    {
+      "name": "cookiecutterassert",
+      "url": "https://github.com/cookiecutterassert/cookiecutterassert",
+      "description": "A testing framework for Cookiecutter project templates.",
+      "contributions": [
+        {
+          "title": "Update for proper cookiecutter function call",
+          "repo": "cookiecutterassert/cookiecutterassert",
+          "number": 13,
+          "url": "https://github.com/cookiecutterassert/cookiecutterassert/pull/13",
+          "merged": "2021-07-07",
+          "diff": "compatibility",
+          "summary": "Updated the call into Cookiecutter's API to match its current signature, which restored compatibility with the upstream release."
+        }
+      ]
+    }
+  ]
+}
